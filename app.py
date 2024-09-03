@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.secret_key = "Secret Key"
 
 #SQLAlchemy - connecting to database from workbench
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:P347word%40%24%23@localhost/crud' # encoded password - as some characters interferes with @localhost
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:P347word%40%24%23@localhost/crud' # encoded password as some characters interferes with @localhost
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -28,18 +28,18 @@ class Data(db.Model):
 
 @app.route('/')
 def index():
-    all_data = Data.query.all()
-
-    return render_template("index.html", employees = all_data)
-
     return render_template("index.html")
+
+@app.route('/crud')
+def crud():
+    all_data = Data.query.all()
+    return render_template("crud.html", employees=all_data)
 
 
 # Add new Employee  - insert post data from html form into database
-@app.route('/insert', methods = ['POST'])
+@app.route('/insert', methods=['POST'])
 def insert():
     if request.method == 'POST':
-
         name = request.form['name']
         email = request.form['email']
         phone = request.form['phone']
@@ -48,15 +48,13 @@ def insert():
         db.session.add(my_data)
         db.session.commit()
 
-        flash("Employee inserted scuccessfully")
-
-        return redirect(url_for('index'))
+        flash("Employee inserted successfully")
+        return redirect(url_for('crud'))
 
 
 #Edit row - Update database from form input
-@app.route('/update', methods = ['GET','POST'])
+@app.route('/update', methods=['GET', 'POST'])
 def update():
-
     if request.method == 'POST':
         my_data = Data.query.get(request.form.get('id'))
 
@@ -66,19 +64,17 @@ def update():
 
         db.session.commit()
         flash("Employee updated successfully")
-
-        return redirect(url_for('index'))
+        return redirect(url_for('crud'))
 
 
 #Delete row - 
-@app.route('/delete/<id>/', methods = ['GET', 'POST'])
+@app.route('/delete/<id>/', methods=['GET', 'POST'])
 def delete(id):
     my_data = Data.query.get(id)
     db.session.delete(my_data)
     db.session.commit()
-    flash("Employee Deleted Successfully")
-
-    return redirect(url_for('index'))
+    flash("Employee deleted successfully")
+    return redirect(url_for('crud'))
 
 
 # for the predict button to be specific for each employee:
