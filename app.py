@@ -1,73 +1,99 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-from flask_mysqldb import MySQL
-from werkzeug.security import generate_password_hash, check_password_hash
-import MySQLdb.cursors
+from flask import Flask, render_template, request, redirect, url_for, flash 
+from flask_sqlalchemy import SQLAlchemy
+
 
 app = Flask(__name__)
-app.config.from_object('config.Config')
+app.secret_key = "Secret Key"
 
-mysql = MySQL(app)
+#SQLAlchemy - connecting to database from workbench
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:P347word%40%24%23@localhost/crud' # encoded password - as some characters interferes with @localhost
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+#~ creating tables from code itself 
+class Data(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(100))
+    email = db.Column(db.String(100))
+    phone = db.Column(db.String(100))
+
+    def __init__(self, name, email, phone):
+        self.name = name
+        self.email = email
+        self.phone = phone
+
+
+
 
 @app.route('/')
 def index():
-    if 'loggedin' in session:
-        return render_template('index.html', username=session['username'])
-    return render_template('index.html', username=None)
+    all_data = Data.query.all()
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        username = request.form['username']
-        password = request.form['password']
-        hashed_password = generate_password_hash(password)
+    return render_template("index.html", employees = all_data)
 
-        cursor = mysql.connection.cursor()
-        cursor.execute('INSERT INTO users (username, password) VALUES (%s, %s)', (username, hashed_password))
-        mysql.connection.commit()
-        cursor.close()
+    return render_template("index.html")
 
-        flash('You have successfully registered! You can now log in.')
-        return redirect(url_for('login'))
-    return render_template('register.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        username = request.form['username']
-        password = request.form['password']
+# Add new Employee  - insert post data from html form into database
+@app.route('/insert', methods = ['POST'])
+def insert():
+    if request.method == 'POST':
 
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
-        user = cursor.fetchone()
-        cursor.close()
+        name = request.form['name']
+        email = request.form['email']
+        phone = request.form['phone']
 
-        if user and check_password_hash(user['password'], password):
-            session['loggedin'] = True
-            session['id'] = user['id']
-            session['username'] = user['username']
-            return redirect(url_for('index'))
-        else:
-            flash('Incorrect username/password!')
-    return render_template('login.html')
+        my_data = Data(name, email, phone)
+        db.session.add(my_data)
+        db.session.commit()
 
-@app.route('/logout')
-def logout():
-    session.pop('loggedin', None)
-    session.pop('id', None)
-    session.pop('username', None)
-    flash('You have been logged out.')
+        flash("Employee inserted scuccessfully")
+
+        return redirect(url_for('index'))
+
+
+#Edit row - Update database from form input
+@app.route('/update', methods = ['GET','POST'])
+def update():
+
+    if request.method == 'POST':
+        my_data = Data.query.get(request.form.get('id'))
+
+        my_data.name = request.form['name']
+        my_data.email = request.form['email']
+        my_data.phone = request.form['phone']
+
+        db.session.commit()
+        flash("Employee updated successfully")
+
+        return redirect(url_for('index'))
+
+
+#Delete row - 
+@app.route('/delete/<id>/', methods = ['GET', 'POST'])
+def delete(id):
+    my_data = Data.query.get(id)
+    db.session.delete(my_data)
+    db.session.commit()
+    flash("Employee Deleted Successfully")
+
     return redirect(url_for('index'))
 
-@app.route('/list')
-def list_app():
-    if 'loggedin' in session:
-        return render_template('list.html')
-    flash('You need to be logged in to view this page.')
-    return redirect(url_for('login'))
 
-@app.route('/add_bar', methods=['POST'])
-def add_bar():
-    return jsonify(success=True)
+# for the predict button to be specific for each employee:
+@app.route('/predict/<id>')
+def predict(id):
+    # Your prediction logic here
+    # You can fetch the employee by id if needed
+    employee = Data.query.get(id)
+    # Render a prediction template or redirect
+    return render_template('predict.html', employee=employee)
 
-if __name__ == '__main__':
+
+# Application entry point:
+if __name__ == "__main__":
     app.run(debug=True)
+
+
+

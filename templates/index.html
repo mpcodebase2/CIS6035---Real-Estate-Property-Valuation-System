@@ -1,30 +1,149 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <header>
-        {% if username %}
-            <p>Welcome, {{ username }}!</p>
-            <a href="{{ url_for('logout') }}">Logout</a>
-            <a href="{{ url_for('list_app') }}">Go to List Application</a>
-        {% else %}
-            <a href="{{ url_for('login') }}">Login</a>
-        {% endif %}
-    </header>
-    <h1>Welcome to the Home Page</h1>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul>
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-</body>
-</html>
+{% extends 'base.html' %}
+{% include 'header.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="jumbotron p-3">
+                <h2> Manage <b>Employees</b> 
+                    <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#mymodal">Add New Employees</button>
+                </h2>
+
+                <!-- Display flash messages -->
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                {% for message in messages %}
+                 <!-- <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div> -->
+
+                <!-- <div class="alert alert-success alert-dismissible fade show p-2 small" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div> -->
+
+                <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                
+  
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+            </div>
+
+            <!-- Cards for each employee -->
+            <div class="container mt-5">
+                <div class="row">
+                    {% for row in employees %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card-container border p-3">
+                            <h5 class="card-title">ID: {{ row.id }}</h5>
+                            <h5 class="card-title">Name: {{ row.name }}</h5>
+                            <h5 class="card-title">Email: {{ row.email }}</h5>
+                            <h5 class="card-title">Phone: {{ row.phone }}</h5>
+
+                            <div class="card-buttons mt-3">
+                                <!-- Edit button triggers modal -->
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modaledit{{ row.id }}">
+                                    <i class="fas fa-edit"></i> <!-- Edit Icon -->
+                                </button>
+                                <!-- Delete button confirms before deletion -->
+                                <a href="/delete/{{ row.id }}" class="btn btn-danger" onclick="return confirm('Are you sure to delete?')">
+                                    <i class="fas fa-trash-alt"></i> <!-- Delete Icon -->
+                                </a>
+                                <!-- Predict button redirects to another page -->
+                                <a href="/predict/{{ row.id }}" class="btn btn-success">
+                                    Predict
+                                </a>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <!-- Modal - Edit -->
+                    <div id="modaledit{{ row.id }}" class="modal fade" tabindex="-1" aria-labelledby="editEmployeeModalLabel{{ row.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="editEmployeeModalLabel{{ row.id }}">Update Information</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ url_for('update') }}" method="post">
+                                        <input type="hidden" name="id" value="{{ row.id }}">
+                                        <div class="form-group">
+                                            <label>Name:</label>
+                                            <input type="text" class="form-control" name="name" value="{{ row.name }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Email address:</label>
+                                            <input type="email" class="form-control" name="email" value="{{ row.email }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Phone:</label>
+                                            <input type="number" class="form-control" name="phone" value="{{ row.phone }}">
+                                        </div>
+                                        <div class="form-group mt-3">
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Modal - Add New Employee -->
+        <div id="mymodal" class="modal fade" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="addEmployeeModalLabel">Add Employee</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ url_for('insert') }}" method="post">
+                            <div class="form-group">
+                                <label>Name:</label>
+                                <input type="text" class="form-control" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email address:</label>
+                                <input type="email" class="form-control" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone:</label>
+                                <input type="number" class="form-control" name="phone" required>
+                            </div>
+                            <div class="form-group mt-3">
+                                <button type="submit" class="btn btn-primary">Add Employee</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
