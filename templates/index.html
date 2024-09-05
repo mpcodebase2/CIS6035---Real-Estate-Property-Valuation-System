@@ -5,6 +5,10 @@
 {% block body %}
 <div class="container text-center mt-5">
     <h1>Welcome to the Employee Management System</h1>
+    <!-- added login and register links from user autherntication & outline -->
+    <a href="{{url_for('login')}}">Login page</a>
+    <a href="{{url_for('register')}}">Register page</a>
+
     <p class="lead">Use the navigation to manage employees.</p>
     <a href="{{ url_for('crud') }}" class="btn btn-primary">Go to Employee Management</a>
 </div>
