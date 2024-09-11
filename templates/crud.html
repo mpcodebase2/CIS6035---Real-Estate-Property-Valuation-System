@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% include 'header.html' %}
 
-{% block title %} Employee Management {% endblock %}
+{% block title %} project Management {% endblock %}
 
 {% block body %}
 <div class="container">
@@ -9,8 +9,8 @@
         <div class="col-md-12">
 
             <div class="jumbotron p-3">
-                <h2> Manage <b>Employees</b> 
-                    <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#mymodal">Add New Employees</button>
+                <h2> Manage <b>projects</b> 
+                    <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#mymodal">Add New projects</button>
                 </h2>
 
                 <!-- Display flash messages -->
@@ -26,10 +26,10 @@
                 {% endwith %}
             </div>
 
-            <!-- Cards for each employee -->
+            <!-- Cards for each project -->
             <div class="container mt-5">
                 <div class="row">
-                    {% for row in employees %}
+                    {% for row in projects %}
                     <div class="col-md-4 mb-4">
                         <div class="card-container border p-3">
                             <h5 class="card-title">ID: {{ row.id }}</h5>
@@ -55,11 +55,11 @@
                     </div>
 
                     <!-- Modal - Edit -->
-                    <div id="modaledit{{ row.id }}" class="modal fade" tabindex="-1" aria-labelledby="editEmployeeModalLabel{{ row.id }}" aria-hidden="true">
+                    <div id="modaledit{{ row.id }}" class="modal fade" tabindex="-1" aria-labelledby="editprojectModalLabel{{ row.id }}" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h4 class="modal-title" id="editEmployeeModalLabel{{ row.id }}">Update Information</h4>
+                                    <h4 class="modal-title" id="editprojectModalLabel{{ row.id }}">Update Information</h4>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -94,12 +94,12 @@
 
         </div>
 
-        <!-- Modal - Add New Employee -->
-        <div id="mymodal" class="modal fade" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+        <!-- Modal - Add New project -->
+        <div id="mymodal" class="modal fade" tabindex="-1" aria-labelledby="addprojectModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="addEmployeeModalLabel">Add Employee</h4>
+                        <h4 class="modal-title" id="addprojectModalLabel">Add project</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -117,7 +117,7 @@
                                 <input type="number" class="form-control" name="phone" required>
                             </div>
                             <div class="form-group mt-3">
-                                <button type="submit" class="btn btn-primary">Add Employee</button>
+                                <button type="submit" class="btn btn-primary">Add project</button>
                             </div>
                         </form>
                     </div>

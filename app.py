@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.secret_key = "Secret Key"
 
 #SQLAlchemy - connecting to database from workbench
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:P347word%40%24%23@localhost/test_merge' # encoded password - as some characters interferes with @localhost
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:P347word%40%24%23@localhost/test_merge' # encoded password by gpt - as some characters interferes with @localhost
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -89,7 +89,7 @@ def login():
 @login_required
 def crud():
     all_data = Data.query.all()
-    return render_template("crud.html", employees=all_data)
+    return render_template("crud.html", projects=all_data)
 
 
 @app.route('/logout', methods=['GET', 'POST'])                                  # |  from user autherntication & outline
@@ -113,7 +113,7 @@ def register():
     return render_template('register.html', form=form)
 
 
-# Add new Employee  - insert post data from html form into database
+# Add new project  - insert post data from html form into database
 @app.route('/insert', methods=['POST'])
 def insert():
     if request.method == 'POST':
@@ -125,7 +125,7 @@ def insert():
         db.session.add(my_data)
         db.session.commit()
 
-        flash("Employee inserted successfully")
+        flash("project inserted successfully")
         return redirect(url_for('crud'))
 
 
@@ -140,7 +140,7 @@ def update():
         my_data.phone = request.form['phone']
 
         db.session.commit()
-        flash("Employee updated successfully")
+        flash("project updated successfully")
         return redirect(url_for('crud'))
 
 
@@ -150,17 +150,18 @@ def delete(id):
     my_data = Data.query.get(id)
     db.session.delete(my_data)
     db.session.commit()
-    flash("Employee deleted successfully")
+    flash("project deleted successfully")
     return redirect(url_for('crud'))
 
 
-# for the predict button to be specific for each employee:
+# GPT - for the predict button to be specific for each project:
 @app.route('/predict/<id>')
 def predict(id):
-
-    employee = Data.query.get(id)
-    # to render a prediction template or redirect
-    return render_template('predict.html', employee=employee)
+    # Your prediction logic here
+    # You can fetch the project by id if needed
+    project = Data.query.get(id)
+    # Render a prediction template or redirect
+    return render_template('predict.html', project=project)
 
 
 # Application entry point:
