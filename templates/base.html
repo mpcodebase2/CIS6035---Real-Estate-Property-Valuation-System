@@ -8,36 +8,10 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+    <!-- static/ style.css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
     <title>{% block title %} {% endblock %} </title>
-
-    
-    <style>
-
-        /* GPT added to reduce font size in (table, modal) index.html */
-        .table {
-            font-size: 14px; /* Adjust the font size as needed */
-        }
-        .modal-content {
-            font-size: 14px; /* Adjust the font size as needed */
-        }
-        .form-group{
-            margin-top: 30px;
-            
-        }
-
-        /* Gpt added to reduce the flash message size */
-        .custom-alert {
-        font-size: 0.875rem; /* Adjust font size */
-        padding: 1rem 1rem; /* Adjust padding */
-        margin-top: 1rem;
-        }
-
-        .custom-alert .btn-close {
-            font-size: 1rem; /* Adjust close button size */
-        }
-
-    </style> 
-
 </head>
 <body>
 

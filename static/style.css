@@ -1,0 +1,21 @@
+/* GPT added to reduce font size in (table, modal) index.html */
+.table {
+    font-size: 14px; /* Adjust the font size as needed */
+}
+.modal-content {
+    font-size: 14px; /* Adjust the font size as needed */
+}
+.form-group {
+    margin-top: 30px;
+}
+
+/* GPT added to reduce the flash message size */
+.custom-alert {
+    font-size: 0.875rem; /* Adjust font size */
+    padding: 1rem 1rem; /* Adjust padding */
+    margin-top: 1rem;
+}
+
+.custom-alert .btn-close {
+    font-size: 1rem; /* Adjust close button size */
+}
