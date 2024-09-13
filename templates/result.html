@@ -24,7 +24,7 @@
 
         .left-section, .right-section {
             flex: 1;
-            /* display: flex; - commented this to gaid clean divide */
+            /* display: flex; - commented this to gain clean divide */
             align-items: center;
             justify-content: center;
         }
@@ -44,24 +44,22 @@
 <body>
     <!-- top -->
     <div id="result-container" class="top-section">
-        
-        <!-- <h1>Predicted House Price</h1>
-        <p>The predicted price of the house based on the provided features is: <strong>${{ price }}</strong></p>
-        <a href="{{ url_for('home') }}">Go Back</a> -->
-
         <div class="left-section">
             <!-- left -->
-            
+            <!-- Content for the left section can go here -->
         </div>
 
         <div class="right-section">
             <!-- right  -->
-            <h1>Predicted House Price</h1>
-            <p>The predicted price of the house based on the provided features is: <strong>${{ price }}</strong></p>
-            <a href="{{ url_for('home') }}">Go Back</a>
+            <div>
+                <h1>Predicted House Price</h1>
+                <p>The predicted price of the house based on the provided features is: <strong>${{ price }}</strong></p>
+                <!--  'Go Back' button to link to the Crud page -->
+                <a href="{{ url_for('crud') }}" class="btn btn-secondary">Go Back</a>
+            </div>
         </div>
-
     </div>
+    
     <!-- bottom -->
     <div class="bottom-section">
         <div class="card">

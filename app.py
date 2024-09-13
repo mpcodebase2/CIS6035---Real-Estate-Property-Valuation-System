@@ -6,11 +6,14 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 
+import pandas as pd
+import pickle
+
 app = Flask(__name__)
 app.secret_key = "Secret Key"
 
 #SQLAlchemy - connecting to database from workbench
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:P347word%40%24%23@localhost/test_merge' # encoded password by gpt - as some characters interferes with @localhost
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:P347word%40%24%23@localhost/test_merge' # encoded password - as some characters interferes with @localhost
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -65,7 +68,9 @@ class Data(db.Model):
         self.phone = phone
 
 
-
+# Load the model from the pickle file
+with open('LR.pkl', 'rb') as file:
+    model = pickle.load(file)
 
 @app.route('/')
 def index():
@@ -155,13 +160,65 @@ def delete(id):
 
 
 # GPT - for the predict button to be specific for each project:
-@app.route('/predict/<id>')
-def predict(id):
+# @app.route('/predict/<id>')
+# def predict(id):
     # Your prediction logic here
     # You can fetch the project by id if needed
-    project = Data.query.get(id)
+    # project = Data.query.get(id)
     # Render a prediction template or redirect
+    # return render_template('predict.html', project=project)
+
+@app.route('/predict/<id>', methods=['GET', 'POST'])
+def predict(id):
+    project = Data.query.get(id)
+
+    if request.method == 'POST':
+        # Retrieve form data
+        beds = int(request.form.get('beds'))
+        baths = int(request.form.get('baths'))
+        garage = int(request.form.get('garage'))
+        sqft = int(request.form.get('sqft'))
+        stories = int(request.form.get('stories'))
+
+        # Prepare the feature DataFrame for prediction
+        features = pd.DataFrame([[beds, baths, garage, sqft, stories]],
+                                columns=['beds', 'baths', 'garage', 'sqft', 'stories'])
+
+        # Predict the house price using the loaded model
+        predicted_price = model.predict(features)[0]
+
+        # Clipping the predicted price to a minimum value
+        predicted_price = max(predicted_price, 207835.7886)
+
+        # Redirect to a new page to display the result
+        return redirect(url_for('result', price=predicted_price, id=id))
+
+    # Render the prediction form template (GET request)
     return render_template('predict.html', project=project)
+
+
+
+@app.route('/result')
+def result():
+    price = request.args.get('price')
+    project_id = request.args.get('id')
+    project = Data.query.get(project_id)
+    return render_template('result.html', price=price, project=project)
+
+# @app.route('/result')
+# def result():
+#     price = request.args.get('price')
+#     project_id = request.args.get('id')
+#     project = Data.query.get(project_id)
+    
+#     if not project:
+#         # Handle case where project is not found
+#         flash("Project not found!")
+#         return redirect(url_for('index'))
+
+#     return render_template('result.html', price=price, project=project)
+
+
 
 
 # Application entry point:
