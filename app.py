@@ -21,12 +21,15 @@ bcrypt = Bcrypt(app)
 
 login_manager = LoginManager()              
 login_manager.init_app(app)                 
-login_manager.login_view = "Login"          
+login_manager.login_view = "login"    #updated 9/9/2024 from Login -> login (for testing error)      
 
-@login_manager.user_loader                  
-def load_user(user_id):                     
-    return User.query.get(int(user_id))     
+# @login_manager.user_loader                  
+# def load_user(user_id):                     
+#     return User.query.get(int(user_id))     
 
+@login_manager.user_loader
+def load_user(user_id):
+    return db.session.get(User, int(user_id))  # -  #updated 9/9/2024
 
 class User(db.Model, UserMixin):                                                           
     id = db.Column(db.Integer, primary_key=True) # Changed from ID to id                   
@@ -138,7 +141,8 @@ def insert():
 @app.route('/update', methods=['GET', 'POST'])
 def update():
     if request.method == 'POST':
-        my_data = Data.query.get(request.form.get('id'))
+        # my_data = Data.query.get(request.form.get('id'))
+        my_data = db.session.get(Data, request.form.get('id')) # - updated 9/9/2024
 
         my_data.name = request.form['name']
         my_data.email = request.form['email']
@@ -152,14 +156,15 @@ def update():
 #Delete row - 
 @app.route('/delete/<id>/', methods=['GET', 'POST'])
 def delete(id):
-    my_data = Data.query.get(id)
+    # my_data = Data.query.get(id)
+    my_data = db.session.get(Data, id) #updated - 9/9/2024
     db.session.delete(my_data)
     db.session.commit()
     flash("project deleted successfully")
     return redirect(url_for('crud'))
 
 
-# GPT - for the predict button to be specific for each project:
+# for the predict button to be specific for each project:
 # @app.route('/predict/<id>')
 # def predict(id):
     # Your prediction logic here
@@ -170,7 +175,9 @@ def delete(id):
 
 @app.route('/predict/<id>', methods=['GET', 'POST'])
 def predict(id):
-    project = Data.query.get(id)
+    # project = Data.query.get(id) 
+    project = db.session.get(Data, id) #- updated 9/9/2024 -  Replaced the legacy .get() method with session.get().
+
 
     if request.method == 'POST':
         # Retrieve form data
@@ -202,7 +209,8 @@ def predict(id):
 def result():
     price = request.args.get('price')
     project_id = request.args.get('id')
-    project = Data.query.get(project_id)
+    # project = Data.query.get(project_id)
+    project = db.session.get(Data, project_id) #- - updated 9/9/2024
     return render_template('result.html', price=price, project=project)
 
 # @app.route('/result')
