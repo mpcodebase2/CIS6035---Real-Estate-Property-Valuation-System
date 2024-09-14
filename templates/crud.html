@@ -4,13 +4,36 @@
 {% block title %} project Management {% endblock %}
 
 {% block body %}
+
+<style>
+
+    .custom-section {
+        background-color: #f8f9fa; /* Light background specific to this container */
+        padding: 20px;
+        border-radius: 10px;
+    }
+    
+    .custom-section .card-container {
+        background-color: #ffffff; /* White background for each card */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow effect */
+        border-radius: 8px; /* Rounded corners for each card */
+        transition: transform 0.3s ease; /* Smooth transition for hover effect */
+    }
+    
+    .custom-section .card-container:hover {
+        transform: scale(1.05); /* Slight scale up on hover */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+    }
+    
+</style>
+
 <div class="container">
     <div class="row">
         <div class="col-md-12">
 
-            <div class="jumbotron p-3">
-                <h2> Manage <b>projects</b> 
-                    <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#mymodal">Add New projects</button>
+            <div class="jumbotron p-3 mt-3">
+                <h2>Dashboard
+                    <button type="button" class="btn btn-outline-primary float-end" data-bs-toggle="modal" data-bs-target="#mymodal">Add New projects</button>
                 </h2>
 
                 <!-- Display flash messages -->
@@ -27,7 +50,7 @@
             </div>
 
             <!-- Cards for each project -->
-            <div class="container mt-5">
+            <div class="container custom-section  mt-5">
                 <div class="row">
                     {% for row in projects %}
                     <div class="col-md-4 mb-4">
@@ -47,7 +70,7 @@
                                     <i class="fas fa-trash-alt"></i> <!-- Delete Icon -->
                                 </a>
                                 <!-- Predict button redirects to another page -->
-                                <a href="/predict/{{ row.id }}" class="btn btn-success">
+                                <a href="/predict/{{ row.id }}" class="btn btn-warning">
                                     Predict
                                 </a>
                             </div>

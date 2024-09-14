@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.secret_key = "Secret Key"
 
 #SQLAlchemy - connecting to database from workbench
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:P347word%40%24%23@localhost/test_merge' # encoded password - as some characters interferes with @localhost
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:P347word%40%24%23@localhost/real_estate' # encoded password - as some characters interferes with @localhost
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -72,7 +72,7 @@ class Data(db.Model):
 
 
 # Load the model from the pickle file
-with open('LR.pkl', 'rb') as file:
+with open('models/RandomForest.pkl', 'rb') as file: # 9/11/2024 - added lr pkl to model folder
     model = pickle.load(file)
 
 @app.route('/')
