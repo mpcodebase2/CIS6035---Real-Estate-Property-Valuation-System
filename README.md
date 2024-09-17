@@ -1,11 +1,8 @@
 # CIS6035---Real-Estate-Property-Valuation-System
 
-This web application is designed for managing real estate listings and related functionalities. The application uses Flask for the web framework, MySQL for database management, and additional libraries for security, form handling, and testing.
+This web application is designed to Manage property listings and Predict the price of a property using its internal features. The application uses Flask for the web framework, MySQL for database management and additional libraries for security, form handling, and testing.
 
 The data set to train the prediction model was obtained from the ‘Real Estate Data Utah 2024’ in Kaggle. 
-
-It contains real estate listings from the US date of Utah with 4440 entries and 14 column of different 
-internal features a real estate property
 
 Link: https://www.kaggle.com/datasets/kanchana1990/real-estate-data-utah-2024
 
